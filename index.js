@@ -120,6 +120,37 @@ async function run() {
             const result = await usersDB.findOne(filter);
             res.send(result)
         })
+        //PATCH: user data updating or adding to database 
+        app.patch('/users/:id', async (req, res) => {
+            const id = req.params.id;
+            const cursor = {
+                _id: new ObjectId(id)
+            }
+            const options = {
+                upsert: true
+            }
+            const updateUser = req.body;
+            const user = {
+                $set: {
+                    name: updateUser.name,
+                    location: updateUser.location,
+                    company: updateUser.company,
+                    jobTitle: updateUser.jobTitle,
+                    favoriteColor: updateUser.favoriteColor,
+                }
+            }
+            const result = await usersDB.updateOne(cursor, user, options)
+            res.send(result)
+        })
+        //DELETE: delete the user from database
+        app.delete('/users/:id', async (req, res) => {
+            const id = req.params.id;
+            const deleteId = {
+                _id: new ObjectId(id)
+            }
+            const result = await usersDB.deleteOne(deleteId)
+            res.send(result);
+        })
     } catch (error) {
         console.error("Error connecting to MongoDB:", error);
     }
