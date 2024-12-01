@@ -67,13 +67,13 @@ async function run() {
             const updateCoffee = req.body;
             const coffee = {
                 $set: {
-                    name:updateCoffee.name,
-                    chef:updateCoffee.chef,
-                    supplier:updateCoffee.supplier,
-                    taste:updateCoffee.taste,
-                    category:updateCoffee.category,
-                    details:updateCoffee.details,
-                    photo:updateCoffee.photo
+                    name: updateCoffee.name,
+                    chef: updateCoffee.chef,
+                    supplier: updateCoffee.supplier,
+                    taste: updateCoffee.taste,
+                    category: updateCoffee.category,
+                    details: updateCoffee.details,
+                    photo: updateCoffee.photo
                 }
             }
             const result = await coffeeDB.updateOne(updateid, coffee, options)
@@ -94,6 +94,32 @@ async function run() {
         app.get('/', (req, res) => {
             res.send('Hello World! this is Jubayer');
         });
+
+
+        // Create a database name and collection name for new users
+        const usersDB = client.db('coffeeDB').collection('users');
+        // POST: get Users data from register form and post to database
+        app.post('/users', async (req, res) => {
+            const newUser = req.body;
+            console.log(newUser);
+            const result = await usersDB.insertOne(newUser)
+            res.send(result)
+        })
+        // GET: geting the Users data from database
+        app.get('/users', async (req, res) => {
+            const cursor = usersDB.find();
+            const result = await cursor.toArray();
+            res.send(result)
+        })
+        //GET: get the single data from database
+        app.get('/users/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = {
+                _id: new ObjectId(id)
+            }
+            const result = await usersDB.findOne(filter);
+            res.send(result)
+        })
     } catch (error) {
         console.error("Error connecting to MongoDB:", error);
     }
