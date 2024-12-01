@@ -1,18 +1,18 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
+require('dotenv').config()
 const port = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors());
 app.use(express.json());
-
 const {
     MongoClient,
     ServerApiVersion,
     ObjectId
 } = require('mongodb');
-const uri = "mongodb+srv://coffeeMaster:5R0poB4Rp9BVvdEm@cluster0.wr4sb.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+const uri = `mongodb+srv://${process.env.USER_NAME}:${process.env.USER_PASWORD}@cluster0.wr4sb.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -90,12 +90,10 @@ async function run() {
             const result = await coffeeDB.deleteOne(deletedId)
             res.send(result)
         })
-        // GET: Root endpoint
-        app.get('/', (req, res) => {
-            res.send('Hello World! this is Jubayer');
-        });
 
-
+        app.get('/', (req,res)=>{
+            res.send('hey your server is running now')
+        })
         // Create a database name and collection name for new users
         const usersDB = client.db('coffeeDB').collection('users');
         // POST: get Users data from register form and post to database
